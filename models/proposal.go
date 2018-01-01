@@ -20,8 +20,10 @@ type Address struct {
 	Client   Client `gorm:"ForeignKey:ClientID"`
 	ClientID int
 	Address  string //TODO: here type text
+	Notes    string `gorm:"type:text"`
 }
 
+// Proposl - заявка
 type Proposal struct {
 	gorm.Model
 	Client             Client
@@ -30,4 +32,22 @@ type Proposal struct {
 	AddressString      string
 	ProposalJSONString string
 	Deadline           time.Time
+}
+
+// ProposalManager -
+type ProposalManager struct {
+	db *DB
+}
+
+// NewProposalManager -
+func NewProposalManager(db *DB) (*ProposalManager, error) {
+	manager := ProposalManager{}
+	manager.db = db
+
+	db.AutoMigrate(
+		&Client{},
+		&Address{},
+		&Proposal{})
+
+	return &manager, nil
 }
